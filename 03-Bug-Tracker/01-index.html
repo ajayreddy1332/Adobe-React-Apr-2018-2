@@ -89,6 +89,26 @@
 			}
 		}
 
+		class BugItem extends React.Component{
+			constructor(props){
+				super(props);
+				this.onBugNameClick = this.onBugNameClick.bind(this);
+			}
+			onBugNameClick(){
+				this.props.model.toggle();
+				console.log(this.props.model);
+			}
+			render(){
+				let bug = this.props.model;
+				return(
+					<li>
+						<span className="bugname" onClick={this.onBugNameClick}>{bug.name}</span>
+						<div>[ {bug.isClosed.toString()} ]</div>
+						<div className="datetime">[Created At]</div>
+					</li>
+				)
+			}
+		}
 
 		class BugTracker extends React.Component{
 			txtBugNameRef = React.createRef();
@@ -96,26 +116,19 @@
 			constructor(props){
 				super(props);
 				this.onAddNewClick = this.onAddNewClick.bind(this);
-				this.onBugNameClick = this.onBugNameClick.bind(this);
+				
 			}
 			onAddNewClick(){
 				let newBugName = this.txtBugNameRef.current.value;
 				this.props.model.addNew(newBugName);
 			}
-			onBugNameClick(evt){
-				console.log(evt);
-				console.log('bug is being toggled');
-			}
+			
 			render(){
 				let { model } = this.props,
 					bugs = model.getAll();
 
 				let bugItems = bugs.map((bug,index) => (
-					<li key={index}>
-						<span className="bugname" onClick={this.onBugNameClick}>{bug.name}</span>
-						<div>[ {bug.isClosed.toString()} ]</div>
-						<div className="datetime">[Created At]</div>
-					</li>
+					<BugItem model={bug} key={index} />
 				));
 
 				return(
