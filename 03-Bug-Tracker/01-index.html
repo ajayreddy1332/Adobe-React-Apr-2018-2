@@ -47,44 +47,103 @@
 			font-style: italic;
 		}
 	</style>
+	<script src="react.js"></script>
+	<script src="react-dom.js"></script>
+	<script src="babel.min.js"></script>
+	<script type="text/babel">
+		class EventEmitter{
+			listenerFns = [];
+			subscribe(listenerFn){
+				if (typeof listenerFn === 'function')
+					this.listenerFns.push(listenerFn);
+			}
+			triggerChange(){
+				this.listenerFns.forEach(listenerFn => listenerFn());
+			}
+		}
+
+		class BugsCollection extends EventEmitter{
+			_list = [];
+			constructor(){
+				super();
+			}
+			addNew(bugName){
+				this._list.push(bugName);
+				this.triggerChange();
+			}
+			getAll(){
+				return [...this._list];
+			}
+		}
+
+
+		class BugTracker extends React.Component{
+			txtBugNameRef = React.createRef();
+
+			constructor(props){
+				super(props);
+				this.onAddNewClick = this.onAddNewClick.bind(this);
+			}
+			onAddNewClick(){
+				let newBugName = this.txtBugNameRef.current.value;
+				this.props.model.addNew(newBugName);
+			}
+			render(){
+				let { model } = this.props,
+					bugs = model.getAll();
+
+				let bugItems = bugs.map((bug,index) => (
+					<li key={index}>
+						<span className="bugname">{bug}</span>
+						<div className="datetime">[Created At]</div>
+					</li>
+				));
+
+				return(
+					<div>
+						<section className="stats">
+							<span className="closed">1</span>
+							<span> / </span>
+							<span>{bugs.length}</span>
+						</section>
+						<section className="sort">
+							<label htmlFor="">Order By :</label>
+							<select>
+								<option value=""></option>
+								<option value=""></option>
+							</select>
+							<label htmlFor="">Descending ? :</label>
+							<input type="checkbox" />
+						</section>
+						<section className="edit">
+							<label htmlFor="">Bug Name :</label>
+							<input type="text"  ref={this.txtBugNameRef}/>
+							<input type="button" value="Add New" onClick={this.onAddNewClick} />
+						</section>
+						<section className="list">
+							<ol>
+								{bugItems}
+							</ol>
+							<input type="button" value="Remove Closed" />
+						</section>
+					</div>
+				)
+			}
+		}
+
+		var model = new BugsCollection();
+		function renderApp(){
+			ReactDOM.render(<BugTracker model={model}/>,
+				document.getElementById('root'));
+		}
+		model.subscribe(renderApp);
+		renderApp();
+	</script>
 </head>
 <body>
 	<h1>Bug Tracker</h1>
 	<hr>
-	<!-- BugTracker -->
-	<div>
-		<section className="stats">
-			<span className="closed">1</span>
-			<span> / </span>
-			<span>2</span>
-		</section>
-		<section className="sort">
-			<label htmlFor="">Order By :</label>
-			<select>
-				<option value=""></option>
-				<option value=""></option>
-			</select>
-			<label htmlFor="">Descending ? :</label>
-			<input type="checkbox" />
-		</section>
-		<section className="edit">
-			<label htmlFor="">Bug Name :</label>
-			<input type="text" />
-			<input type="button" value="Add New" />
-		</section>
-		<section className="list">
-			<ol>
-				<li>
-					<span className="bugname">[This is bug - 1]</span>
-					<div className="datetime">[Created At]</div>
-				</li>
-				<li>
-					<span className="bugname closed">[This is bug - 2]</span>
-					<div className="datetime">[Created At]</div>
-				</li>
-			</ol>
-			<input type="button" value="Remove Closed" />
-		</section>
-	</div>
+	<div id="root"></div>
+	
 </body>
 </html>
