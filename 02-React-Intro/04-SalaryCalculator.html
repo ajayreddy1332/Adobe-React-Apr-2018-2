@@ -75,13 +75,6 @@
 			this.set('salary', net);
 		};
 		class SalaryCalculator extends React.Component{
-			basicRef = React.createRef();
-			hraRef = React.createRef();
-			daRef = React.createRef();
-			taxRef = React.createRef();
-
-			
-
 			constructor(props){
 				super(props);
 				this.onBasicChange = this.onBasicChange.bind(this);
@@ -91,17 +84,17 @@
 				this.onCalculateClick = this.onCalculateClick.bind(this);
 			}
 
-			onBasicChange(){
-				this.props.model.set('basic', this.basicRef.current.valueAsNumber);
+			onBasicChange(evt){
+				this.props.model.set('basic', evt.target.valueAsNumber);
 			}
-			onHraChange(){
-				this.props.model.set('hra', this.hraRef.current.valueAsNumber);
+			onHraChange(evt){
+				this.props.model.set('hra', evt.target.valueAsNumber);
 			}
-			onDaChange(){
-				this.props.model.set('da', this.daRef.current.valueAsNumber);
+			onDaChange(evt){
+				this.props.model.set('da', evt.target.valueAsNumber);
 			}
-			onTaxChange(){
-				this.props.model.set('tax', this.taxRef.current.valueAsNumber);
+			onTaxChange(evt){
+				this.props.model.set('tax', evt.target.valueAsNumber);
 			}
 			onCalculateClick(){
 				this.props.model.calculate();
@@ -113,19 +106,19 @@
 					<div>
 						<div className="field">
 							<label htmlFor="">Basic :</label>
-							<input type="number" id="txtBasic" onChange={this.onBasicChange} ref={this.basicRef}/>
+							<input type="number" id="txtBasic" onChange={this.onBasicChange} />
 						</div>
 						<div className="field">
 							<label htmlFor="">HRA :</label>
-							<input type="number" id="txtHra" onChange={this.onHraChange} ref={this.hraRef}/>
+							<input type="number" id="txtHra" onChange={this.onHraChange} />
 						</div>
 						<div className="field">
 							<label htmlFor="">DA :</label>
-							<input type="number" id="txtDa" onChange={this.onDaChange} ref={this.daRef}/>
+							<input type="number" id="txtDa" onChange={this.onDaChange} />
 						</div>
 						<div className="field">
 							<label htmlFor="">Tax :</label>
-							<input type="range" id="rangeTax" min="0" max="30" defaultValue="0" onChange={this.onTaxChange} ref={this.taxRef}/>
+							<input type="range" id="rangeTax" min="0" max="30" defaultValue="0" onChange={this.onTaxChange} />
 						</div>
 						<div className="field">
 							<input type="button" value="Calculate" id="btnCalculate" onClick={this.onCalculateClick}/>
