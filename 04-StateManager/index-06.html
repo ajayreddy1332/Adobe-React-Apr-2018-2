@@ -47,10 +47,10 @@
 				this.onDecrementClick = this.onDecrementClick.bind(this);
 			}
 			onDecrementClick(){
-				this.props.actions.decrement();
+				this.props.decrement();
 			}
 			onIncrementClick(){
-				this.props.actions.increment();
+				this.props.increment();
 			}
 			render(){
 				let { value } = this.props;
@@ -67,7 +67,7 @@
 		let spinnerActions = SM.bindActionCreators(spinnerActionCreators, store.dispatch);
 		function renderApp(){
 			let spinnerValue = store.getState();
-			ReactDOM.render(<Spinner value={spinnerValue} actions={spinnerActions}/>,
+			ReactDOM.render(<Spinner value={spinnerValue} increment={spinnerActions.increment} decrement={spinnerActions.decrement} />,
 				document.getElementById('root'));
 		}
 		renderApp();
