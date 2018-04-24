@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>React Intro</title>
+	<style>
+		body{
+			margin-left: 50px;
+		}
+		.field{
+			margin-bottom: 10px;
+		}
+		label{
+			display: block;
+		}
+		table{
+			font-size: 18pt;
+		}
+		#tdSalary{
+			color : red;
+		}
+	</style>
+	<script src="react.js"></script>
+	<script src="react-dom.js"></script>
+	<script src="babel.min.js"></script>
+	<script type="text/babel">
+		//Model
+		function SalaryCalculatorModel(){
+			var _data = {
+				basic : 0,
+				hra : 0,
+				da : 0,
+				tax : 0,
+				salary : 0
+			};
+
+			this.toJSON = function(){
+				return {
+					basic : _data.basic,
+					hra : _data.hra,
+					da : _data.da,
+					tax : _data.tax,
+					salary : _data.salary
+				};
+			}
+
+			this.get = function(attrName){
+				return _data[attrName];
+			};
+
+			this.set = function(attrName, value){
+				if (_data[attrName] === value) return;
+				_data[attrName] = value;
+				//trigger change notification for 'attrName';
+				triggerChange(attrName);
+			};
+
+			function triggerChange(){
+				_changeListeners.forEach(function(listenerFn){
+					if (typeof listenerFn === 'function')
+						listenerFn();
+				});
+			}
+
+			var _changeListeners = [];
+
+			this.subscribe = function(listenerFn){
+				_changeListeners.push(listenerFn);
+			};
+
+		}
+		SalaryCalculatorModel.prototype.calculate = function() {
+			var gross = this.get('basic') + this.get('hra') + this.get('da');
+			var net = gross * ((100-this.get('tax'))/100);
+			this.set('salary', net);
+		};
+		class SalaryCalculator extends React.Component{
+			basicRef = React.createRef();
+			hraRef = React.createRef();
+			daRef = React.createRef();
+			taxRef = React.createRef();
+
+			constructor(props){
+				super(props);
+				this.onBasicChange = this.onBasicChange.bind(this);
+				this.onHraChange = this.onHraChange.bind(this);
+				this.onDaChange = this.onDaChange.bind(this);
+				this.onTaxChange = this.onTaxChange.bind(this);
+				this.onCalculateClick = this.onCalculateClick.bind(this);
+			}
+			onBasicChange(){
+				this.props.model.set('basic', this.basicRef.current.valueAsNumber);
+			}
+			onHraChange(){
+				this.props.model.set('hra', this.hraRef.current.valueAsNumber);
+			}
+			onDaChange(){
+				this.props.model.set('da', this.daRef.current.valueAsNumber);
+			}
+			onTaxChange(){
+				this.props.model.set('tax', this.taxRef.current.valueAsNumber);
+			}
+			onCalculateClick(){
+				this.props.model.calculate();
+			}
+			render(){
+				let data = model.toJSON();
+				let {basic, hra, da, tax, salary} = data;
+				return(
+					<div>
+						<div className="field">
+							<label htmlFor="">Basic :</label>
+							<input type="number" id="txtBasic" onChange={this.onBasicChange} ref={this.basicRef}/>
+						</div>
+						<div className="field">
+							<label htmlFor="">HRA :</label>
+							<input type="number" id="txtHra" onChange={this.onHraChange} ref={this.hraRef}/>
+						</div>
+						<div className="field">
+							<label htmlFor="">DA :</label>
+							<input type="number" id="txtDa" onChange={this.onDaChange} ref={this.daRef}/>
+						</div>
+						<div className="field">
+							<label htmlFor="">Tax :</label>
+							<input type="range" id="rangeTax" min="0" max="30" onChange={this.onTaxChange} ref={this.taxRef}/>
+						</div>
+						<div className="field">
+							<input type="button" value="Calculate" id="btnCalculate" onClick={this.onCalculateClick}/>
+						</div>
+						<div className="field">
+							<table>
+								<tbody>
+									<tr>
+										<td id="tdBasic">{basic}</td>
+										<td id="tdHra">{hra}</td>
+										<td id="tdDa">{da}</td>
+										<td id="tdTax">{tax}</td>
+										<td id="tdSalary">{salary}</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				)
+			}
+		}
+		window.model = new SalaryCalculatorModel();
+		function renderApp(){
+			ReactDOM.render(<SalaryCalculator model={model}/>, document.getElementById('root'));
+		}
+		model.subscribe(renderApp);
+		renderApp();
+	</script>
+</head>
+<body>
+	<h1>Salary Calculator</h1>
+	<hr/>
+	<div id="root">
+		
+	</div>
+</body>
+</html>
