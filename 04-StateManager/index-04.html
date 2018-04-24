@@ -13,7 +13,9 @@
 			if (action.type === 'DECREMENT') return --currentState;
 			return currentState;
 		}
+
 		var store = SM.createStore(spinnerReducer);
+
 		var spinnerActionCreators = {
 			increment(){
 				return {type : 'INCREMENT'};
@@ -22,6 +24,20 @@
 				return {type : 'DECREMENT'};
 			}
 		}
+
+		function bindSpinnerActions(spinnerActionCreators, dispatch){
+			return {
+				increment(){
+					let action = spinnerActionCreators.increment();
+					dispatch(action);
+				},
+				decrement(){
+					let action = spinnerActionCreators.decrement();
+					dispatch(action);
+				}
+			}
+		}
+
 		class Spinner extends React.Component{
 			constructor(props){
 				super(props);
@@ -29,12 +45,10 @@
 				this.onDecrementClick = this.onDecrementClick.bind(this);
 			}
 			onDecrementClick(){
-				let {dispatch, actions } = this.props;
-				dispatch(actions.decrement());
+				this.props.actions.decrement();
 			}
 			onIncrementClick(){
-				let {dispatch, actions } = this.props;
-				dispatch(actions.increment());
+				this.props.actions.increment();
 			}
 			render(){
 				let { value } = this.props;
@@ -47,9 +61,11 @@
 				)
 			}
 		}
+
+		let spinnerActions = bindSpinnerActions(spinnerActionCreators, store.dispatch);
 		function renderApp(){
 			let spinnerValue = store.getState();
-			ReactDOM.render(<Spinner value={spinnerValue} dispatch={store.dispatch} actions={spinnerActionCreators}/>,
+			ReactDOM.render(<Spinner value={spinnerValue} actions={spinnerActions}/>,
 				document.getElementById('root'));
 		}
 		renderApp();
