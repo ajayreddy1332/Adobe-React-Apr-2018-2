@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<title></title>
-	<script src="state-manager.js"></script>
+	<script src="redux.js"></script>
 	<script src="react.js"></script>
 	<script src="react-dom.js"></script>
 	<script src="babel.min.js"></script>
@@ -14,7 +14,9 @@
 			return currentState;
 		}
 
-		var store = SM.createStore(spinnerReducer);
+		
+
+		var store = Redux.createStore(spinnerReducer);
 
 		var spinnerActionCreators = {
 			increment(){
@@ -40,31 +42,16 @@
 
 		
 
-		class Spinner extends React.Component{
-			constructor(props){
-				super(props);
-				this.onIncrementClick = this.onIncrementClick.bind(this);
-				this.onDecrementClick = this.onDecrementClick.bind(this);
-			}
-			onDecrementClick(){
-				this.props.decrement();
-			}
-			onIncrementClick(){
-				this.props.increment();
-			}
-			render(){
-				let { value } = this.props;
-				return(
-					<div>
-						<input type="button" value="DECREMENT" onClick={this.onDecrementClick}/>
-						<span>[ {value} ]</span>
-						<input type="button" value="INCREMENT" onClick={this.onIncrementClick}/>
-					</div>
-				)
-			}
-		}
+		let Spinner = ({ value, increment, decrement }) => (
+			<div>
+				<input type="button" value="DECREMENT" onClick={decrement}/>
+				<span>[ {value} ]</span>
+				<input type="button" value="INCREMENT" onClick={increment}/>
+			</div>
+		);
+		
 
-		let spinnerActions = SM.bindActionCreators(spinnerActionCreators, store.dispatch);
+		let spinnerActions = Redux.bindActionCreators(spinnerActionCreators, store.dispatch);
 		{/*function renderApp(){
 			let spinnerValue = store.getState();
 			ReactDOM.render(<Spinner value={spinnerValue} increment={spinnerActions.increment} decrement={spinnerActions.decrement} />,

@@ -43,22 +43,15 @@
 		class Spinner extends React.Component{
 			constructor(props){
 				super(props);
-				this.onIncrementClick = this.onIncrementClick.bind(this);
-				this.onDecrementClick = this.onDecrementClick.bind(this);
 			}
-			onDecrementClick(){
-				this.props.decrement();
-			}
-			onIncrementClick(){
-				this.props.increment();
-			}
+			
 			render(){
-				let { value } = this.props;
+				let { value, increment, decrement } = this.props;
 				return(
 					<div>
-						<input type="button" value="DECREMENT" onClick={this.onDecrementClick}/>
+						<input type="button" value="DECREMENT" onClick={decrement}/>
 						<span>[ {value} ]</span>
-						<input type="button" value="INCREMENT" onClick={this.onIncrementClick}/>
+						<input type="button" value="INCREMENT" onClick={increment}/>
 					</div>
 				)
 			}
