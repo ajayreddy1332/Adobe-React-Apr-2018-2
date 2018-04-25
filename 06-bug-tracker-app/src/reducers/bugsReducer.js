@@ -1,20 +1,18 @@
 export function bugsReducer(currentState = [], action){
+	if (action.type === 'LOAD'){
+		return action.payload;
+	}
 	if (action.type === 'ADD_NEW'){
-		let newBugName = action.payload;
-		let newBug = {
-			name : newBugName,
-			isClosed : false,
-			createdAt : new Date()
-		};
+		let newBug = action.payload;
 		return [...currentState, newBug];
 	}
 	if (action.type === 'TOGGLE'){
-		let bugToToggle = action.payload,
-			toggledBug = {...bugToToggle, isClosed : !bugToToggle.isClosed};
-		return currentState.map(bug => bug === bugToToggle ? toggledBug : bug);
+		let toggledBug = action.payload;
+		return currentState.map(bug => bug.id === toggledBug.id ? toggledBug : bug);
 	}
-	if (action.type === 'REMOVE_CLOSED'){
-		return currentState.filter(bug => !bug.isClosed);
+	if (action.type === 'REMOVE'){
+		var bugToRemove = action.payload;
+		return currentState.filter(bug => bug.id !== bugToRemove.id);
 	}
 	return currentState;
 };

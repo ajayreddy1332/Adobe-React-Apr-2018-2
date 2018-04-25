@@ -10,6 +10,9 @@ import BugList from './views/BugList';
 import * as bugActionCreators from './actions';
 
 class BugTracker extends Component{
+	componentDidMount(){
+		this.props.load();
+	}
 	render(){
 		let { model : bugs, addNew, toggle, removeClosed } = this.props;
 		return(

@@ -18,7 +18,17 @@ function logger({getState, dispatch}){
 	}
 }
 
+function thunk({getState, dispatch}){
+	return function(next){
+		return function(action){
+			if (typeof action === 'function'){
+				return action(dispatch, getState);
+			}
+			return next(action);
+		}
+	}
+}
 
-let appStore = createStore(rootReducer, applyMiddleware(logger));
+let appStore = createStore(rootReducer, applyMiddleware(logger, thunk));
 
 export default appStore;
